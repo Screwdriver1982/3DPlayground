@@ -6,29 +6,34 @@ using UnityEngine.XR.WSA.Input;
 
 public class CubeMovement : MonoBehaviour
 {
+    [Header("Moving")]
     [SerializeField] float moveTime = 0.5f;
     [SerializeField] float jumpPower = 0.6f;
-    [SerializeField] float reloadLevelDelay = 1f;
-    [SerializeField] float dropTime = 1f;
+    
+    [Header("DeathConfig")]
     [SerializeField] GameObject deathEffect;
+    [SerializeField] float dropTime = 1f;
+    [SerializeField] float reloadLevelDelay = 1f;
+
+    [Header("Sounds")]
+    [SerializeField] AudioClip deathsound;
 
     Rigidbody rb;
     bool allowInput;
-    bool isMoving;
+    [SerializeField] bool isMoving;
     
     #region DieAndDrop
 
     public void Die()
     {
         GameObject newObject = Instantiate(deathEffect, transform.position, Quaternion.identity);
+        AudioManager.Instance.PlaySound(deathsound);
         Destroy(gameObject);
-        //spawn particle
-        //play sound
-        //reload scene
-        ScenesLoader.Instance.RestartLevel(reloadLevelDelay);
+        ScenesLoader.Instance.LoadLevel(reloadLevelDelay, true);
     }
     public void CubeDrop()
     {
+        print("cube drop start");
         if (!isMoving)
         {
             allowInput = false;
@@ -66,30 +71,50 @@ public class CubeMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             //forward = (0,0,1)
-            Vector3 newPosition = transform.position + Vector3.forward;
-            MoveTo(newPosition);
+            MoveForward();
         }
-        
+
         else if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             //forward = (0,0,1)
-            Vector3 newPosition = transform.position + Vector3.back;
-            MoveTo(newPosition);
+            MoveBack();
         }
 
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             //forward = (0,0,1)
-            Vector3 newPosition = transform.position + Vector3.left;
-            MoveTo(newPosition);
+            MoveLeft();
         }
 
         else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             //forward = (0,0,1)
-            Vector3 newPosition = transform.position + Vector3.right;
-            MoveTo(newPosition);
+            MoveRight();
         }
+    }
+
+    public void MoveRight()
+    {
+        Vector3 newPosition = transform.position + Vector3.right;
+        MoveTo(newPosition);
+    }
+
+    public void MoveLeft()
+    {
+        Vector3 newPosition = transform.position + Vector3.left;
+        MoveTo(newPosition);
+    }
+
+    public void MoveBack()
+    {
+        Vector3 newPosition = transform.position + Vector3.back;
+        MoveTo(newPosition);
+    }
+
+    public void MoveForward()
+    {
+        Vector3 newPosition = transform.position + Vector3.forward;
+        MoveTo(newPosition);
     }
 
     void MoveTo(Vector3 newPosition)

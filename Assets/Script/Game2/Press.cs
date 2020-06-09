@@ -6,15 +6,19 @@ using DG.Tweening;
 
 public class Press : MonoBehaviour
 {
-    public Button activateButton;
-
+    [SerializeField] Button activateButton;
+    [SerializeField] AudioClip dropSound;
+    [Header("LiftAndDropConfig")]
     [SerializeField] float maxYValue = 3f;
     [SerializeField] float liftTime = 1f;
     [SerializeField] float hangingTime = 1f;
-    [SerializeField] float shakeTime = 0.3f;
     [SerializeField] float dropTime = 0.2f;
+    [Header("ShakeConfig")]
+    [SerializeField] float shakeTime = 0.3f;
     [SerializeField] float shakeStrength = 0.05f;
     [SerializeField] int vibrationNumber = 5;
+    
+    
 
     Sequence liftAndLowering;
     public bool dropOrNot;
@@ -23,8 +27,13 @@ public class Press : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (activateButton == null)
+        {
+            Debug.LogError("Button isn't set");
+        }
+
         baseY = transform.position.y;
-        print(baseY);
+        //print(baseY);
         dropOrNot = false;
         activateButton.onButtonPressed += PlayLift;
         activateButton.onButtonExit += PlayLowering;
@@ -62,6 +71,7 @@ public class Press : MonoBehaviour
 
     void PauseOnTheBottom()
     {
+        AudioManager.Instance.PlaySound(dropSound);
         dropOrNot = false;
         liftAndLowering.Pause();
     }

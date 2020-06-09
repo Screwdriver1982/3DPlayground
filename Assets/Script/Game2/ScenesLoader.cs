@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,6 +8,7 @@ public class ScenesLoader : MonoBehaviour
 {
     #region Singleton
     public static ScenesLoader Instance { get; private set; }
+    public Action LoadLevelAction = delegate { };
 
     private void Awake()
     {
@@ -23,17 +25,26 @@ public class ScenesLoader : MonoBehaviour
 
     #endregion
 
-    public void RestartLevel(float delay)
+    public void LoadLevel(float delay, bool restartOrNot)
     {
-        StartCoroutine(RestartLevelWithCoroutine(delay));
+        
+        StartCoroutine(LoadLevelWithCoroutine(delay, restartOrNot));
+
     }
 
-    IEnumerator RestartLevelWithCoroutine(float delay)
+    IEnumerator LoadLevelWithCoroutine(float delay, bool restartOrNot)
     {
+
         yield return new WaitForSeconds(delay);
         int currentScene = SceneManager.GetActiveScene().buildIndex;
+        if (!restartOrNot)
+        {
+            currentScene += 1;
+        }
         SceneManager.LoadScene(currentScene);
 
     }
+
+
 
 }

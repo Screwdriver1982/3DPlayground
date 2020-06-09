@@ -107,6 +107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropY: -10
-  shakeTime: 0.7
   dropTime: 1
+  shakeTime: 0.5
   waitTime: 3
+  catchCube: 0

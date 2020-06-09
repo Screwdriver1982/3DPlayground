@@ -94,11 +94,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activateButton: {fileID: 0}
+  dropSound: {fileID: 8300000, guid: cabfae866cab347928b74b7d0ca6bfa9, type: 3}
   maxYValue: 3.4
   liftTime: 3
   hangingTime: 1
-  shakeTime: 1.5
   dropTime: 0.2
+  shakeTime: 1.5
   shakeStrength: 0.4
   vibrationNumber: 30
   dropOrNot: 0
