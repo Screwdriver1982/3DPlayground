@@ -92,8 +92,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.79737306, z: 1}
-  m_Center: {x: 0, y: 1.0036275, z: 0}
+  m_Size: {x: 1, y: 1.6756169, z: 1}
+  m_Center: {x: 0, y: 1.4427499, z: 0}
 --- !u!114 &3443210022459954736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,6 +108,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dropY: -10
   dropTime: 1
-  shakeTime: 0.5
+  shakeTime: 1
   waitTime: 3
   catchCube: 0

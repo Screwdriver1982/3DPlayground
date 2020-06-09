@@ -28,8 +28,8 @@ public class CubeMovement : MonoBehaviour
     {
         GameObject newObject = Instantiate(deathEffect, transform.position, Quaternion.identity);
         AudioManager.Instance.PlaySound(deathsound);
-        Destroy(gameObject);
         ScenesLoader.Instance.LoadLevel(reloadLevelDelay, true);
+        Destroy(gameObject);
     }
     public void CubeDrop()
     {

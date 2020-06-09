@@ -19,15 +19,21 @@ public class ScenesLoader : MonoBehaviour
         else
         { 
             Instance = this;
+            DontDestroyOnLoad(gameObject);
+
         }
 
     }
 
     #endregion
 
+    public Action levelLoadAction;
+
+
+
     public void LoadLevel(float delay, bool restartOrNot)
     {
-        
+        levelLoadAction();        
         StartCoroutine(LoadLevelWithCoroutine(delay, restartOrNot));
 
     }
