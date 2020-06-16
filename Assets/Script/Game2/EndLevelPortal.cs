@@ -26,6 +26,12 @@ public class EndLevelPortal : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        CubeMovement cube = other.GetComponent<CubeMovement>();
+        if (cube != null)
+        {
+            cube.enabled = false;
+        }
+
         ScenesLoader.Instance.LoadLevel(3f, true);
     }
 }

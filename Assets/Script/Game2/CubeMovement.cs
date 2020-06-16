@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.XR.WSA.Input;
+using Lean.Pool;
 
 public class CubeMovement : MonoBehaviour
 {
@@ -15,12 +16,23 @@ public class CubeMovement : MonoBehaviour
     [SerializeField] float dropTime = 1f;
     [SerializeField] float reloadLevelDelay = 1f;
 
+    [Header("TeleportConfig")]
+    [SerializeField] Vector3 teleportPosition;
+    [SerializeField] float fadeTime = 2;
+    [SerializeField] GameObject teleportEffect;
+
+
     [Header("Sounds")]
     [SerializeField] AudioClip deathsound;
 
+
+
     Rigidbody rb;
     bool allowInput;
-    [SerializeField] bool isMoving;
+    bool isMoving;
+    bool blocked;
+    Sequence teleportSequence;
+    Material cubeMaterial;
     
     #region DieAndDrop
 
@@ -55,6 +67,17 @@ public class CubeMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        blocked = false;
+        cubeMaterial = GetComponent<MeshRenderer>().material;
+        teleportSequence = DOTween.Sequence();
+        teleportSequence.Pause();
+        teleportSequence.Append(cubeMaterial.DOFade(0, fadeTime))
+                     .AppendCallback(() => Teleport(teleportPosition))
+                     .Append(cubeMaterial.DOFade(1, fadeTime))
+                     .AppendCallback(()=> TeleportEnded())
+                     .SetLoops(-1, LoopType.Restart);
+
+
         allowInput = true;
         isMoving = false;
         rb = GetComponent<Rigidbody>();
@@ -63,11 +86,7 @@ public class CubeMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!allowInput)
-        {
-            //exit
-            return;
-        }
+        if (!allowInput || blocked) {return;}
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             //forward = (0,0,1)
@@ -95,24 +114,28 @@ public class CubeMovement : MonoBehaviour
 
     public void MoveRight()
     {
+        if (!allowInput || blocked) { return; }
         Vector3 newPosition = transform.position + Vector3.right;
         MoveTo(newPosition);
     }
 
     public void MoveLeft()
     {
+        if (!allowInput || blocked) { return; }
         Vector3 newPosition = transform.position + Vector3.left;
         MoveTo(newPosition);
     }
 
     public void MoveBack()
     {
+        if (!allowInput || blocked) { return; }
         Vector3 newPosition = transform.position + Vector3.back;
         MoveTo(newPosition);
     }
 
     public void MoveForward()
     {
+        if (!allowInput || blocked) { return; }
         Vector3 newPosition = transform.position + Vector3.forward;
         MoveTo(newPosition);
     }
@@ -125,17 +148,37 @@ public class CubeMovement : MonoBehaviour
             allowInput = false;
             isMoving = true;
             //transform.DOMove(newPosition, moveTime).SetEase(Ease.OutElastic);
-            transform.DOJump(newPosition, jumpPower, 1, moveTime).OnComplete(ResetInput);
+            transform.DOJump(newPosition, jumpPower, 1, moveTime).OnComplete(AllowInput);
         }
 
     }
 
-    void ResetInput()
+
+    void AllowInput()
     {
         allowInput = true;
         isMoving = false;
     }
-
     
+    public void UsingPortalTo(Vector3 teleportTo)
+    {
+        blocked = true;
+        teleportPosition = teleportTo;
+        teleportSequence.Play();
+    
+    }
+
+    void Teleport(Vector3 teleportPosition)
+    {
+        LeanPool.Spawn(teleportEffect, transform.position, transform.rotation);
+        transform.position = teleportPosition;
+    }
+    void TeleportEnded()
+    {
+        LeanPool.Spawn(teleportEffect, transform.position, transform.rotation);
+        blocked = false;
+        teleportSequence.Pause();
+        
+    }
 
 }
